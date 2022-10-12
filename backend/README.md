@@ -27,7 +27,7 @@ pip install -r requirements.txt
 With Postgres running, create a `trivia` database:
 
 ```bash
-createdb trivia
+createbd trivia
 ```
 
 Populate the database using the `trivia.psql` file provided. From the `backend` folder in terminal run:
@@ -73,11 +73,10 @@ You will need to provide detailed documentation of your API endpoints including 
 
 ### Documentation Example
 
-`GET '/api/v1.0/categories'`
-
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs.
+`GET '/categories'`
+Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+Request Arguments: None
+Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs.
 
 ```json
 {
@@ -90,6 +89,130 @@ You will need to provide detailed documentation of your API endpoints including 
 }
 ```
 
+`GET \questions?page=<page_number>`
+Fetches all questions of all available categories paginated
+Request parameters (optional): page:int
+
+Example response:
+```json
+ 
+ "questions": [
+   {
+     "answer": "Maya Angelou", 
+     "category": 4, 
+     "difficulty": 2, 
+     "id": 5, 
+     "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+   },  
+   {
+     "answer": "Escher", 
+     "category": 2, 
+     "difficulty": 1, 
+     "id": 16, 
+     "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+   }
+ ], 
+ "success": true, 
+ "total_questions": 2
+ "categories": {
+   "1": "Science", 
+   "2": "Art", 
+   "3": "Geography", 
+   "4": "History", 
+   "5": "Entertainment", 
+   "6": "Sports"
+ }, 
+ "current_category": null, 
+}
+```
+`DELETE /questions/<question_id>`
+Delete an existing question specified by user with question_id from all available questions 
+Request arguments: question_id:int
+
+Example response:
+```json
+{
+  "deleted": "16", 
+  "success": true
+}
+```
+`POST /questions`
+Add a new question to the available questions
+Request body: {question:string, answer:string, difficulty:int, category:string}
+
+Example response:
+```json
+{
+  "created": 30, 
+  "success": true
+}
+```
+
+`POST /questions/search`
+Fetches all questions where a substring matches the search term (not case-sensitive)
+Request body: {searchTerm:string}
+
+Example response:
+```json
+{
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "Lisbon", 
+      "category": 2, 
+      "difficulty": 1, 
+      "id": 29, 
+      "question": "What is the capital of Portugal?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 1
+}
+```
+`GET /categories/<int:category_id>/questions`
+Fetches questions for the specified category specified by user with category_id
+Request argument: category_id:int
+```json
+Example response:
+{
+  "current_category": 1, 
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    {
+      "answer": "Alexander Fleming", 
+      "category": 1, 
+      "difficulty": 3, 
+      "id": 21, 
+      "question": "Who discovered penicillin?"
+    }, 
+  ], 
+  "success": true, 
+  "total_questions": 2
+}
+```
+`POST /play`
+Fetches one random question within a specified category. Previously asked questions are not asked again.
+Request body: {previous_questions: arr, quiz_category: {id:int, type:string}}
+
+Example response:
+```json
+{
+  "question": {
+    "answer": "The Liver", 
+    "category": 1, 
+    "difficulty": 4, 
+    "id": 20, 
+    "question": "What is the heaviest organ in the human body?"
+  }, 
+  "success": true
+}
+```
 ## Testing
 
 Write at least one test for the success and at least one error behavior of each endpoint using the unittest library.
