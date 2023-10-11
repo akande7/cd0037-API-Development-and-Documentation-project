@@ -1,5 +1,4 @@
 import os
-from zoneinfo import available_timezones
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -7,7 +6,7 @@ import random
 
 from models import setup_db, Question, Category, db
 
-QUESTIONS_PER_PAGE = 10
+QUESTIONS_PER_PAGE = 6
 
 def paginate_questions(request,selection):
     page = request.args.get('page',1, type=int)
@@ -17,10 +16,12 @@ def paginate_questions(request,selection):
     current_questions = questions[start:end]
     return current_questions
 
-def create_app(test_config=None):
-    # create and configure the app
+def create_app(test_config=None): 
+
     app = Flask(__name__)
-    setup_db(app)
+    with app.app_context():
+        setup_db(app)
+    
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     
     @app.after_request
@@ -129,7 +130,7 @@ def create_app(test_config=None):
                 'total_questions':len(questions),
                 'category': category.type,
             })
-
+            
 
 
     @app.route('/api/quizzes', methods=['POST'])
@@ -191,4 +192,3 @@ def create_app(test_config=None):
         }), 400
 
     return app
-
